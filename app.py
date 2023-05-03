@@ -27,7 +27,7 @@ def index():
             else: 
                 reviews[name] = existing_review + review_content
             
-
+        results = {}
         for key, value in reviews.items():
             review_content_string = value;
             response = openai.Completion.create(
@@ -41,10 +41,11 @@ def index():
                 best_of=1,
                 stop=None)
             generated_text = response.choices[0].text.strip()
+            results[key] = generated_text
             # print(key)
             # print(generated_text)
             # print("\n\n")
-        return redirect(url_for("index", result=generated_text))
+        return redirect(url_for("index", result=results))
 
     result = request.args.get("result")
     return render_template("index.html", result=result)
