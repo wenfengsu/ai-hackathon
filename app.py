@@ -20,23 +20,23 @@ def index():
 
         reviews = {}
         for index, headers in df.iterrows():
-            review_content = str(headers["reviews.text"])
+            reviews_text = str(headers["reviews.text"])
             name = str(headers["name"])
-            print(hotel, name)
             if name != hotel:
                 continue
             existing_review = reviews.get(name)
             if existing_review == None:
-                reviews[name] = review_content    
+                reviews[name] = reviews_text    
             else: 
-                reviews[name] = existing_review + review_content
+                reviews[name] = existing_review + reviews_text
             
         results = ""
         for key, value in reviews.items():
-            review_content_string = value
+            reviews_text_string = value
+            trimmed_reviews = reviews_text_string[0:4096]
             response = openai.Completion.create(
                 engine="ReviewSummary",
-                prompt=generate_prompt(review_content_string),
+                prompt=generate_prompt(trimmed_reviews),
                 temperature=0.3,
                 max_tokens=250,
                 top_p=1,
@@ -45,10 +45,7 @@ def index():
                 best_of=1,
                 stop=None)
             results = response.choices[0].text.strip()
-            # results[key] = generated_text
-            print(key)
-            print(results)
-            print("\n\n")
+
         return redirect(url_for("index", result=results))
 
     result = request.args.get("result")
