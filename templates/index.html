@@ -8,9 +8,10 @@
 
 <body>
   <img src="{{ url_for('static', filename='dog.png') }}" class="icon" />
-  <h3>tell me what you want in the hotel you are looking for</h3>
+  <h3>Enter the name of the hotel</h3>
+  <p><i>we will provide you with a summary of all the reviews.</i></p>
   <form action="/" method="post">
-    <input type="text" name="hotel" placeholder="ie. find me the best hotel" required />
+    <input type="text" name="hotel" placeholder="ie. The Charlesmark Hotel" required />
     <input type="submit" value="show result" />
   </form>
   {% if result %}

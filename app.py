@@ -14,22 +14,26 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def index():
     if request.method == "POST":
         hotel = request.form["hotel"]
+        
         df = pd.read_csv("./data/Datafiniti_Hotel_Reviews.csv")
         df_10 = df.head(10)
 
         reviews = {}
-        for index, headers in df_10.iterrows():
+        for index, headers in df.iterrows():
             review_content = str(headers["reviews.text"])
             name = str(headers["name"])
+            print(hotel, name)
+            if name != hotel:
+                continue
             existing_review = reviews.get(name)
             if existing_review == None:
                 reviews[name] = review_content    
             else: 
                 reviews[name] = existing_review + review_content
             
-        results = {}
+        results = ""
         for key, value in reviews.items():
-            review_content_string = value;
+            review_content_string = value
             response = openai.Completion.create(
                 engine="ReviewSummary",
                 prompt=generate_prompt(review_content_string),
@@ -40,11 +44,11 @@ def index():
                 presence_penalty=0,
                 best_of=1,
                 stop=None)
-            generated_text = response.choices[0].text.strip()
-            results[key] = generated_text
-            # print(key)
-            # print(generated_text)
-            # print("\n\n")
+            results = response.choices[0].text.strip()
+            # results[key] = generated_text
+            print(key)
+            print(results)
+            print("\n\n")
         return redirect(url_for("index", result=results))
 
     result = request.args.get("result")
