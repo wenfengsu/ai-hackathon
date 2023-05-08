@@ -6,7 +6,7 @@ from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 openai.api_type = "azure"
-openai.api_base = "https://reviewscons.openai.azure.com/"
+openai.api_base = "https://hackathontest2.openai.azure.com/"
 openai.api_version = "2022-12-01"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -35,7 +35,7 @@ def index():
             reviews_text_string = value
             trimmed_reviews = reviews_text_string[0:4096]
             response = openai.Completion.create(
-                engine="ReviewSummary",
+                engine="TextDavinci003Test1",
                 prompt=generate_prompt(trimmed_reviews),
                 temperature=0.3,
                 max_tokens=250,
@@ -53,4 +53,4 @@ def index():
 
 
 def generate_prompt(review_content_string):
-    return "Summarize the following review content in 100 words" + review_content_string + "\n\nSummary:"
+    return "Summarize the following review content in 50 words" + review_content_string + "\n\nSummary:"
